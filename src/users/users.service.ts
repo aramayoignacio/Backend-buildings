@@ -15,7 +15,6 @@ export class UsersService {
   ) { }
 
   private saltOrRounds = 10;
-  private users = []
 
   async create(createUserDto: CreateUserDto) {
     const { username, password } = createUserDto;
@@ -29,7 +28,7 @@ export class UsersService {
       const createdUser = await this.userRepository.save(userObj);
       return responseOk(createdUser);
     } catch (error) {
-      throw new Error('Error al crear el usuario');
+      throw new Error('Error al crear el usuario: '+error);
     }
   }
 

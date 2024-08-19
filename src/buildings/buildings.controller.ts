@@ -19,14 +19,14 @@ export class BuildingsController {
     return this.buildingsService.findAll();
   }
 
-  @Get('/protected')
-  getProtectedResource() {
-    return 'This is a protected resource';
+  @Get('/by-user/:userExternalId')
+  getBuildingsByUser(@Param('userExternalId') userExternalId : string){
+    return this.buildingsService.getByUser(userExternalId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.buildingsService.findOne(+id);
+  @Get(':buildingExternalId')
+  findOne(@Param('buildingExternalId') buildingExternalId: string) {
+    return this.buildingsService.findOne(buildingExternalId);
   }
 
   @Patch(':id')

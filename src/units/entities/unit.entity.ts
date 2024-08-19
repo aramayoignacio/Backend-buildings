@@ -10,22 +10,22 @@ export class Unit {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({nullable:false})
+  @Column({ nullable: true })
   name: string;
 
-  @ManyToOne(()=>Sector,(s)=>s.units)
+  @ManyToOne(() => Sector, (s) => s.units)
   @JoinColumn({ name: 'sector_id' })
-  sector:Sector;
+  sector: Sector;
 
   @Column()
   keys: boolean;
 
-  @OneToMany(()=>Garage, (g)=>g.unit)
-  garages:Garage[];
+  @OneToMany(() => Garage, (g) => g.unit)
+  garages: Garage[];
 
-  @ManyToOne(()=>UnitType, (ut)=>ut.units)
+  @ManyToOne(() => UnitType, (ut) => ut.units)
   @JoinColumn({ name: 'unit_type_id' })
-  type:UnitType;
+  type: UnitType;
 
   @ManyToMany(() => Owner, { nullable: false })
   @JoinTable({
