@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { BuildingsService } from './buildings.service';
 import { CreateBuildingDto } from './dto/create-building.dto';
 import { UpdateBuildingDto } from './dto/update-building.dto';
@@ -19,14 +19,14 @@ export class BuildingsController {
     return this.buildingsService.findAll();
   }
 
-  @Get('/protected')
-  getProtectedResource() {
-    return 'This is a protected resource';
+  @Get('/by-user/:userExternalId')
+  getBuildingsByUser(@Param('userExternalId') userExternalId : string){
+    return this.buildingsService.getByUser(userExternalId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.buildingsService.findOne(+id);
+  @Get(':buildingExternalId')
+  findOne(@Param('buildingExternalId') buildingExternalId: string) {
+    return this.buildingsService.findOne(buildingExternalId);
   }
 
   @Patch(':id')

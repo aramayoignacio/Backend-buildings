@@ -1,10 +1,13 @@
 import { Building } from 'src/buildings/entities/building.entity';
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-
+import { BeforeInsert, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
+  
+  @Column({ name:"external_id", type: 'uuid', unique: true, nullable: false })
+  externalId: string;
 
   @Column()
   username: string;
@@ -28,4 +31,9 @@ export class User {
     },
   })
   buildings: Building[];
+
+  @BeforeInsert()
+  generateExternalId() {
+    this.externalId = uuidv4();
+  }
 }

@@ -21,11 +21,12 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DATABASE_HOST || 'localhost',
-      port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
-      username: process.env.DATABASE_USER || 'root',
-      password: process.env.DATABASE_PASSWORD || 'root',
-      database: process.env.DATABASE_NAME || 'test',
+      url: process.env.DATABASE_URL || 'postgres://user:password@localhost:5432/database_name',
+      // host: process.env.DATABASE_HOST || 'localhost',
+      // port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
+      // username: process.env.DATABASE_USER || 'root',
+      // password: process.env.DATABASE_PASSWORD || 'root',
+      // database: process.env.DATABASE_NAME || 'test',
       entities: [__dirname + '/**/*.entity.{ts,js}'],
       synchronize: true,
       ssl: {
