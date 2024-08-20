@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from "class-validator";
+import { IsArray, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateBuildingDto {
     @IsString()
@@ -9,4 +9,9 @@ export class CreateBuildingDto {
 
     @IsNumber()
     readonly floors: number;
+
+    @IsOptional()
+    @IsArray()
+    @IsNumber({}, { each: true })
+    readonly userIds: number[];
 }

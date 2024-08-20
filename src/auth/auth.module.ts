@@ -15,7 +15,7 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule,
     JwtModule.register({
       secret: jwtConstants.secret, // Cambia esto por tu secreto
-      signOptions: { expiresIn: '60m' }, // Configura el tiempo de expiración según tu necesidad
+      // signOptions: { expiresIn: '60m' }, // Configura el tiempo de expiración según tu necesidad
     }),
   ],
   providers: [AuthService, JwtStrategy],

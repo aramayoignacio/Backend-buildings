@@ -23,6 +23,6 @@ export class AuthService {
     }
     const payload = { username: user.username, sub: user.id, isAdmin: user.isAdmin };
     const token = this.jwtService.sign(payload);
-    return responseOk({ token, username: user.username, isAdmin: user.isAdmin });
+    return responseOk({ token, username: user.username, isAdmin: user.isAdmin, externalId: user.externalId });
   }
 }

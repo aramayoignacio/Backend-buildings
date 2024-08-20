@@ -3,37 +3,42 @@ import { CreateBuildingDto } from './dto/create-building.dto';
 import { UpdateBuildingDto } from './dto/update-building.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Building } from './entities/building.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { responseOk } from 'utils';
 import { FloorsService } from 'src/floors/floors.service';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class BuildingsService {
   constructor(
     @InjectRepository(Building)
     private readonly repository: Repository<Building>,
-    private readonly floorService: FloorsService
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private readonly floorService: FloorsService,
   ) { }
 
   async create(createBuildingDto: CreateBuildingDto) {
     try {
       const existingBuilding = await this.repository.findOne({ where: { name: createBuildingDto.name } });
+      const users = createBuildingDto.userIds ? await this.userRepository.find({ where: { id: In(createBuildingDto.userIds) } }) : [];
       if (existingBuilding) {
         throw new ConflictException('El nombre del edificio ya está en uso');
       }
       const floors = createBuildingDto.floors;
-      const building = this.repository.create({ name: createBuildingDto.name, address: createBuildingDto.address });
+      const building = this.repository.create({ name: createBuildingDto.name, address: createBuildingDto.address, users });
       const buildingCreated = await this.repository.save(building);
       await this.floorService.createBulk(buildingCreated, floors);
-      return responseOk(buildingCreated); 
+      return responseOk(buildingCreated);
     } catch (error) {
       console.error(error)
       throw new InternalServerErrorException();
     }
   }
 
-  findAll() {
-    return `This action returns all buildings`;
+  async findAll() {
+    const allBuildings = await this.repository.find();
+    return responseOk(allBuildings);
   }
 
   async findOne(buildingExternalId: string) {
