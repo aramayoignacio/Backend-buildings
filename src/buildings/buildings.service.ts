@@ -43,7 +43,9 @@ export class BuildingsService {
 
   async findOne(buildingExternalId: string) {
     try {
-      const building = await this.repository.find({ where: { externalId: buildingExternalId }, relations: ['workers', 'floors.sectors.units', 'garages'] })
+      const building = await this.repository.findOne({ where: { externalId: buildingExternalId }, 
+        relations: ['workers', 'floors.sectors.units', 'garages', 'users'], 
+        order: { floors: { numberInBuilding: 'ASC' } } });
       return responseOk(building);
     } catch (error) {
       console.error(error)
@@ -51,8 +53,17 @@ export class BuildingsService {
     }
   }
 
-  update(id: number, updateBuildingDto: UpdateBuildingDto) {
-    return `This action updates a #${id} building`;
+  async update(id: number, updateBuildingDto: UpdateBuildingDto) {
+    try {
+      const building = await this.repository.findOne({ where: { id }, relations: ['users'] });
+      const usersToAdd = await this.userRepository.find({ where: { id: In(updateBuildingDto.userIds) } });
+      building.users = [...building.users, ...usersToAdd];
+      building.name = updateBuildingDto.name;
+      return responseOk(await this.repository.save(building));
+    } catch (error) {
+      console.error(error)
+      throw new InternalServerErrorException();
+    }
   }
 
   remove(id: number) {

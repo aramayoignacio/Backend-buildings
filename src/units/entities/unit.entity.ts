@@ -10,7 +10,7 @@ export class Unit {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   name: string;
 
   @ManyToOne(() => Sector, (s) => s.units)

@@ -13,13 +13,18 @@ export class SectorsService {
     @InjectRepository(Sector)
     private readonly repository: Repository<Sector>,
     @InjectRepository(Floor)
-    private readonly floorRepository: Repository<Floor>
-  ) { }
+    private readonly floorRepository: Repository<Floor>,
+  ) {}
 
   async create(createSectorDto: CreateSectorDto) {
     try {
-      const floor = await this.floorRepository.findOne({ where: { id: createSectorDto.floorId } })
-      const sector = this.repository.create({ name: createSectorDto.name, floor });
+      const floor = await this.floorRepository.findOne({
+        where: { id: createSectorDto.floorId },
+      });
+      const sector = this.repository.create({
+        name: createSectorDto.name,
+        floor,
+      });
       return responseOk(await this.repository.save(sector));
     } catch (err) {
       console.error(err);
@@ -27,8 +32,17 @@ export class SectorsService {
     }
   }
 
-  findAll() {
-    return `This action returns all sectors`;
+  async findAll() {
+    return responseOk(await this.repository.find());
+  }
+
+  async findAllByBuilding(id: number) {
+    return responseOk(
+      await this.repository.find({
+        relations: ['floor'],
+        where: { floor: { building: { id } } },
+      }),
+    );
   }
 
   findOne(id: number) {
