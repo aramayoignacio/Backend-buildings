@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { SectorsService } from './sectors.service';
 import { CreateSectorDto } from './dto/create-sector.dto';
 import { UpdateSectorDto } from './dto/update-sector.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('sectors')
+@UseGuards(JwtAuthGuard)
 export class SectorsController {
   constructor(private readonly sectorsService: SectorsService) {}
 
@@ -15,6 +17,11 @@ export class SectorsController {
   @Get()
   findAll() {
     return this.sectorsService.findAll();
+  }
+
+  @Get("/by-building/:id")
+  findAllByBuilding(@Param('id') id: string) {
+    return this.sectorsService.findAllByBuilding(+id);
   }
 
   @Get(':id')
